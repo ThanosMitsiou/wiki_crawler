@@ -15,7 +15,7 @@ class Crawler:
         self.queue.append(starting_url)
         self.queue.append('level')
         self.session = requests.Session()
-        self.pool = ThreadPoolExecutor(max_workers=5)
+        self.pool = ThreadPoolExecutor(max_workers=10)
 
     def crawl(self, depth):
         seen = set()
@@ -35,7 +35,9 @@ class Crawler:
             if url == 'level':
                 level += 1
                 self.queue.append('level')
-                sleep(5)
+                self.pool.shutdown(wait=True)
+                self.pool = ThreadPoolExecutor(max_workers=10)
+
                 continue
 
             # Check if already visited
